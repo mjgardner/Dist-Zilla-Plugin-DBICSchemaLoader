@@ -1,6 +1,6 @@
 package Dist::Zilla::Plugin::DBICSchemaLoader;
 
-# ABSTRACT: Database to DBIx::Class::Schema when building your dist
+# ABSTRACT: Automatic DBIx::Class::Schema in dist
 
 use autodie;
 use Class::Inspector;
@@ -60,8 +60,8 @@ has [
 
 =method before_build
 
-Instructs L<SOAP::WSDL|SOAP::WSDL> to generate Perl classes for the provided
-WSDL and gathers them into the C<lib> directory of your distribution.
+Generates Perl classes and gathers them into the C<lib> directory of your
+distribution.
 
 =cut
 
@@ -93,9 +93,12 @@ sub before_build {
 
 1;
 
+## no critic (Tics::ProhibitLongLines)
+
 __END__
 
 =head1 DESCRIPTION
 
 This L<Dist::Zilla|Dist::Zilla> plugin will create classes in your
-distribution for a L<DBI|DBI> data source using L<DBIx::Class::Schema>.
+distribution for a L<DBI|DBI> data source using
+L<DBIx::Class::Schema|DBIx::Class::Schema>.

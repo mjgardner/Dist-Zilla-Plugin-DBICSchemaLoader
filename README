@@ -1,6 +1,6 @@
 NAME
-    Dist::Zilla::Plugin::DBICSchemaLoader - Database to DBIx::Class::Schema
-    when building your dist
+    Dist::Zilla::Plugin::DBICSchemaLoader - Automatic DBIx::Class::Schema in
+    dist
 
 VERSION
     version 0.102690
@@ -24,8 +24,8 @@ ATTRIBUTES
 
 METHODS
   before_build
-    Instructs SOAP::WSDL to generate Perl classes for the provided WSDL and
-    gathers them into the "lib" directory of your distribution.
+    Generates Perl classes and gathers them into the "lib" directory of your
+    distribution.
 
 INSTALLATION
     See perlmodinstall for information and options on installing Perl
