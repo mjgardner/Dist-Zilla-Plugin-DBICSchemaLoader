@@ -51,10 +51,12 @@ has dump_directory =>
 
 has schema_class => ( ro, required, isa => ClassName );
 
-has(Class::Inspector->methods(
-        'DBIx::Class::Schema::Loader::Base', 'public'
-    )
-) => ( ro, coerce, isa => LoaderOption );
+has [
+    grep { not $ARG ~~ Class::Inspector->methods(__PACKAGE__) }
+        @{ Class::Inspector->methods( 'DBIx::Class::Schema::Loader::Base',
+            'public' )
+        }
+] => ( ro, coerce, isa => LoaderOption );
 
 =method before_build
 
