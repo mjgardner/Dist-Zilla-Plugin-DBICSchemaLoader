@@ -24,8 +24,10 @@ An option for L<DBIx::Class::Schema::Loader|DBIx::Class::Schema::Loader>.
 
 subtype LoaderOption, as Item;
 
-coerce LoaderOption, from Str,
-    via { /^\s*(?:sub\s*\{|q\w?\s*[^\w\s]|[[{])/ ? eval $ARG : $ARG };
+coerce LoaderOption, from Str, via {
+    ## no critic (ProhibitStringyEval, RequireCheckingReturnValueOfEval)
+    /\A \s* (?:sub \s* [{] | q \w? \s* [^\w\s] | [[{] )/ ? eval $ARG : $ARG;
+};
 
 1;
 
