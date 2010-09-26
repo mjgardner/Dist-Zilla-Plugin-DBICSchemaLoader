@@ -4,6 +4,7 @@ package Dist::Zilla::Plugin::DBICSchemaLoader;
 
 use autodie;
 use Class::Inspector;
+require DBIx::Class::Schema::Loader::Base;
 use English '-no_match_vars';
 use File::Copy 'copy';
 use LWP::UserAgent;
@@ -50,8 +51,10 @@ has dump_directory =>
 
 has schema_class => ( ro, required, isa => ClassName );
 
-has Class::Inspector->methods( 'DBIx::Class::Schema::Loader::Base',
-    'public' ) => ( ro, coerce, type => LoaderOption );
+has(Class::Inspector->methods(
+        'DBIx::Class::Schema::Loader::Base', 'public'
+    )
+) => ( ro, coerce, isa => LoaderOption );
 
 =method before_build
 
