@@ -20,6 +20,7 @@ version  = 1.0
 copyright_holder = test holder
 
 [DBICSchemaLoader]
+schema_class = My::Schema
 END_INI
 );
 lives_ok( sub { $zilla->build() } );

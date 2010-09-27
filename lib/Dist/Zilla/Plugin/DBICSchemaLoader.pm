@@ -10,12 +10,13 @@ use File::Copy 'copy';
 use LWP::UserAgent;
 use Moose;
 use MooseX::Has::Sugar;
-use MooseX::Types::Moose qw(ArrayRef ClassName Maybe Str);
+use MooseX::Types::Moose qw(ArrayRef Maybe Str);
 use MooseX::Types::Path::Class 'Dir';
 use MooseX::Types::URI 'Uri';
 use Path::Class;
 use Regexp::DefaultFlags;
-use Dist::Zilla::Plugin::DBICSchemaLoader::Types qw(DSN LoaderOption);
+use Dist::Zilla::Plugin::DBICSchemaLoader::Types
+    qw(ClassName DSN LoaderOption);
 with 'Dist::Zilla::Role::Tempdir';
 with 'Dist::Zilla::Role::BeforeBuild';
 

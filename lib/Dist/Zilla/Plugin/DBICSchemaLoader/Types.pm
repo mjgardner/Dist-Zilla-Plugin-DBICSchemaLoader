@@ -6,7 +6,7 @@ use English '-no_match_vars';
 use Regexp::DefaultFlags;
 use Moose;
 use MooseX::Types::Moose qw(Item Str);
-use MooseX::Types -declare => [qw(DSN LoaderOption)];
+use MooseX::Types -declare => [qw(ClassName DSN LoaderOption)];
 ## no critic (Subroutines::ProhibitCallsToUndeclaredSubs)
 ## no critic (Tics::ProhibitLongLines)
 
@@ -14,7 +14,9 @@ use MooseX::Types -declare => [qw(DSN LoaderOption)];
 
 =cut
 
-subtype DSN, as Str, where {/\Adbi:\w+:/i};
+subtype ClassName, as Str, where {/\A \w+ (?: :: \w+)* \z/};
+
+subtype DSN, as Str, where {/\A dbi:\w+: /i};
 
 =head2 C<LoaderOption>
 

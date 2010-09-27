@@ -3,7 +3,7 @@ NAME
     dist
 
 VERSION
-    version 0.102690
+    version 0.102700
 
 DESCRIPTION
     This Dist::Zilla plugin will create classes in your distribution for a
