@@ -14,16 +14,7 @@ my $tests      = 0;
 my @handles    = Test::Database->handles();
 my $translator = SQL::Translator->new();
 $translator->parser('YAML');
-
-for my $handle (@handles) {
-    eval { $translator->producer( $handle->dbd() ); 1 } or next;
-    diag 'Testing with ', $handle->dbd();
-    $tests++;
-
-    my $dbh = $handle->dbh();
-    my ( $dsn, $username, $password ) = $handle->connection_info();
-    my $sql = $translator->translate(
-        data => <<'END_YAML') or croak $translator->error();
+$translator->data(<<'END_YAML');
 ---
 schema:
   tables:
@@ -50,6 +41,15 @@ schema:
           size:
             - 4000
 END_YAML
+
+for my $handle (@handles) {
+    eval { $translator->producer( $handle->dbd() ); 1 } or next;
+    diag 'Testing with ', $handle->dbd();
+    $tests++;
+
+    my $dbh = $handle->dbh();
+    my ( $dsn, $username, $password ) = $handle->connection_info();
+    my $sql = $translator->translate() or croak $translator->error();
     $handle->dbh->do($sql) or croak $handle->dbh->errstr();
 
     my $dist_dir = File::Temp->newdir();
