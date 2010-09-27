@@ -1,22 +1,56 @@
 #!perl
 
-use Cwd;
+use Carp;
 use Dist::Zilla::Tester 4.101550;
 use File::Temp;
+use SQL::Translator;
 use Test::Database;
 use Test::Most;
 use Test::Moose;
 
 use Dist::Zilla::Plugin::DBICSchemaLoader;
 
-my @handles = Test::Database->handles();
-plan tests => scalar @handles;
+my $tests      = 0;
+my @handles    = Test::Database->handles();
+my $translator = SQL::Translator->new();
+$translator->parser('YAML');
 
 for my $handle (@handles) {
+    eval { $translator->producer( $handle->dbd() ); 1 } or next;
     diag 'Testing with ', $handle->dbd();
+    $tests++;
 
     my $dbh = $handle->dbh();
     my ( $dsn, $username, $password ) = $handle->connection_info();
+    my $sql = $translator->translate(
+        data => <<'END_YAML') or croak $translator->error();
+---
+schema:
+  tables:
+    TEST_TABLE:
+      fields:
+        ID:
+          data_type: NUMBER
+          default_value: ~
+          is_nullable: 0
+          is_primary_key: 1
+          is_unique: 0
+          name: ID
+          order: 1
+          size:
+            - 11
+        NAME:
+          data_type: VARCHAR2
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 1
+          name: NAME
+          order: 2
+          size:
+            - 4000
+END_YAML
+    $handle->dbh->do($sql) or croak $handle->dbh->errstr();
 
     my $dist_dir = File::Temp->newdir();
     my $zilla    = Dist::Zilla::Tester->from_config(
@@ -38,4 +72,4 @@ END_INI
     );
     lives_ok( sub { $zilla->build() } );
 }
-
+done_testing($tests);
