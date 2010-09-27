@@ -66,6 +66,7 @@ has \@LOADER_METHODS => ( ro, coerce, isa => LoaderOption );
 has _loader_options => (
     rw,
     isa      => HashRef,
+    default  => sub { {} },
     init_arg => undef,
 );
 
