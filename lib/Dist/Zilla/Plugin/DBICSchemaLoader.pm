@@ -4,16 +4,18 @@ package Dist::Zilla::Plugin::DBICSchemaLoader;
 
 use autodie;
 use Class::Inspector;
+use DBIx::Class::Schema::Loader 'make_schema_at';
 require DBIx::Class::Schema::Loader::Base;
 use English '-no_match_vars';
 use File::Copy 'copy';
 use LWP::UserAgent;
 use Moose;
 use MooseX::Has::Sugar;
-use MooseX::Types::Moose qw(ArrayRef Maybe Str);
+use MooseX::Types::Moose qw(ArrayRef HashRef Maybe Str);
 use MooseX::Types::Path::Class 'Dir';
 use MooseX::Types::URI 'Uri';
 use Path::Class;
+use Readonly;
 use Regexp::DefaultFlags;
 use Dist::Zilla::Plugin::DBICSchemaLoader::Types
     qw(ClassName DSN LoaderOption);
@@ -52,12 +54,23 @@ has dump_directory =>
 
 has schema_class => ( ro, required, isa => ClassName );
 
-has [
+Readonly my @LOADER_METHODS =>
     grep { not $ARG ~~ Class::Inspector->methods(__PACKAGE__) }
-        @{ Class::Inspector->methods( 'DBIx::Class::Schema::Loader::Base',
-            'public' )
-        }
-] => ( ro, coerce, isa => LoaderOption );
+    @{ Class::Inspector->methods(
+        'DBIx::Class::Schema::Loader::Base', 'public'
+    )
+    };
+
+has \@LOADER_METHODS => ( ro, coerce, isa => LoaderOption );
+
+has _loader_options => (
+    rw,
+    isa      => HashRef,
+    init_arg => undef,
+);
+
+around @LOADER_METHODS =>
+    sub { $ARG[1]->_loader_options->{ $ARG[0] } = $ARG[2] };
 
 =method before_build
 
@@ -71,7 +84,11 @@ sub before_build {
 
     my (@generated_files) = $self->capture_tempdir(
         sub {
-
+            make_schema_at(
+                $self->schema_class(),
+                $self->_loader_options(),
+                [ map { $self->$ARG } qw(dsn username password) ],
+            );
         }
     );
 
