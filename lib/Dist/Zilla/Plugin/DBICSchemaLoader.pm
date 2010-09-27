@@ -52,16 +52,17 @@ Directory in which to create the class files.  Defaults to F<lib>.
 has dump_directory =>
     ( ro, required, coerce, isa => Dir, default => sub { dir('lib') } );
 
-has schema_class => ( ro, required, isa => ClassName );
+=attr schema_class
 
-Readonly my @LOADER_METHODS =>
-    grep { not $ARG ~~ Class::Inspector->methods(__PACKAGE__) }
-    @{ Class::Inspector->methods(
-        'DBIx::Class::Schema::Loader::Base', 'public'
-    )
-    };
+Perl class name to use for the generated schema.  Defaults to C<My::Schema>.
 
-has \@LOADER_METHODS => ( ro, coerce, isa => LoaderOption );
+=cut
+
+has schema_class => (
+    ro, required,
+    isa     => ClassName,
+    default => 'My::Schema',
+);
 
 has _loader_options => (
     rw,
@@ -70,8 +71,18 @@ has _loader_options => (
     init_arg => undef,
 );
 
-around @LOADER_METHODS =>
-    sub { $ARG[1]->_loader_options->{ $ARG[0] } = $ARG[2] };
+Readonly my @LOADER_METHODS =>
+    grep { not $ARG ~~ Class::Inspector->methods(__PACKAGE__) }
+    @{ Class::Inspector->methods( 'DBIx::Class::Schema::Loader::Base',
+        'public', )
+    };
+has \@LOADER_METHODS => ( ro, coerce, isa => LoaderOption );
+around @LOADER_METHODS => sub {
+    my ( $orig, $self ) = splice @ARG, 0, 2;
+    $self->_loader_options->{$orig} = @ARG;
+    $self->$orig(@ARG);
+    return;
+};
 
 =method before_build
 

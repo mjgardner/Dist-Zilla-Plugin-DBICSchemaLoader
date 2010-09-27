@@ -22,6 +22,10 @@ ATTRIBUTES
   dump_directory
     Directory in which to create the class files. Defaults to lib.
 
+  schema_class
+    Perl class name to use for the generated schema. Defaults to
+    "My::Schema".
+
 METHODS
   before_build
     Generates Perl classes and gathers them into the "lib" directory of your
