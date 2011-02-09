@@ -3,7 +3,7 @@ NAME
     dist
 
 VERSION
-    version 0.102700
+    version 0.110400
 
 DESCRIPTION
     This Dist::Zilla plugin will create classes in your distribution for a
@@ -51,8 +51,8 @@ AVAILABILITY
     <http://search.cpan.org/dist/Dist-Zilla-Plugin-DBICSchemaLoader/>.
 
     The development version lives at
-    <http://github.com/mjg/Dist-Zilla-Plugin-DBICSchemaLoader.git> and may
-    be cloned from
+    <http://github.com/mjg/Dist-Zilla-Plugin-DBICSchemaLoader> and may be
+    cloned from
     <git://github.com/mjg/Dist-Zilla-Plugin-DBICSchemaLoader.git>. Instead
     of sending patches, please fork this project using the standard git and
     github infrastructure.
