@@ -74,7 +74,7 @@ has _loader_options => (
 Readonly my @LOADER_METHODS =>
     grep { not $ARG ~~ Class::Inspector->methods(__PACKAGE__) }
     @{ Class::Inspector->methods( 'DBIx::Class::Schema::Loader::Base',
-        'public', )
+        'public' )
     };
 has \@LOADER_METHODS => ( ro, coerce, isa => LoaderOption );
 around @LOADER_METHODS => sub {
